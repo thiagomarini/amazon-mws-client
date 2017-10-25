@@ -40,31 +40,6 @@ class AmazonMwsClient
     private $baseUrl;
 
     /**
-     * Generates timestamp in ISO8601 format.
-     *
-     * This method creates a timestamp from the provided string in ISO8601 format.
-     * The string given is passed through <i>strtotime</i> before being used. The
-     * value returned is actually two minutes early, to prevent it from tripping up
-     * Amazon. If no time is given, the current time is used.
-     *
-     * @param string $time [optional] <p>The time to use. Since this value passed through <i>strtotime</i> first,
-     *                     values such as "-1 month" or "10 September 2000" are fine.
-     *                     Defaults to the current time.</p>
-     *
-     * @return string Unix timestamp of the time, minus 2 minutes.
-     */
-    public static function genTime(string $time = null): string
-    {
-        if ($time) {
-            $timestamp = strtotime($time);
-        } else {
-            $timestamp = time();
-        }
-
-        return date('Y-m-d\TH:i:sO', $timestamp - 120);
-    }
-
-    /**
      * AmazonMwsClient constructor.
      *
      * @param string $accessKey - also known as "AWS Access Key ID"
@@ -114,7 +89,7 @@ class AmazonMwsClient
      */
     public function send(string $action, string $versionUri, array $optionalParams = []): \SimpleXMLElement
     {
-        $params = array_merge($optionalParams, $this->buildRequiredParams($action));
+        $params = array_merge($optionalParams, $this->buildRequiredParams($action, $versionUri));
 
         $queryString = $this->genQuery($params, $versionUri);
 
@@ -126,7 +101,7 @@ class AmazonMwsClient
             ],
         ]);
 
-        $response = $client->request(self::METHOD_POST, '/Orders/2013-09-01');
+        $response = $client->request(self::METHOD_POST, $versionUri);
 
         return simplexml_load_string($response->getBody()->getContents());
     }
@@ -206,11 +181,36 @@ class AmazonMwsClient
      */
     protected function genQuery(array $params, string $uri): string
     {
-        $params['Timestamp'] = self::genTime();
+        $params['Timestamp'] = $this->genTime();
         unset($params['Signature']);
         $params['Signature'] = $this->signParameters($params, $uri);
 
         return $this->getParametersAsString($params);
+    }
+
+    /**
+     * Generates timestamp in ISO8601 format.
+     *
+     * This method creates a timestamp from the provided string in ISO8601 format.
+     * The string given is passed through <i>strtotime</i> before being used. The
+     * value returned is actually two minutes early, to prevent it from tripping up
+     * Amazon. If no time is given, the current time is used.
+     *
+     * @param string $time [optional] <p>The time to use. Since this value passed through <i>strtotime</i> first,
+     *                     values such as "-1 month" or "10 September 2000" are fine.
+     *                     Defaults to the current time.</p>
+     *
+     * @return string Unix timestamp of the time, minus 2 minutes.
+     */
+    protected function genTime(string $time = null): string
+    {
+        if ($time) {
+            $timestamp = strtotime($time);
+        } else {
+            $timestamp = time();
+        }
+
+        return date('Y-m-d\TH:i:sO', $timestamp - 120);
     }
 
     /**
@@ -249,15 +249,18 @@ class AmazonMwsClient
      *
      * @return array
      */
-    protected function buildRequiredParams(string $action): array
+    protected function buildRequiredParams(string $action, string $versionUri): array
     {
+        // extract version from url
+        $version = (explode('/', $versionUri));
+
         $requiredParams = [
             'AWSAccessKeyId'     => $this->accessKey,
             'Action'             => $action,
             'SellerId'           => $this->sellerId,
             'MWSAuthToken'       => $this->mwsAuthToken,
             'SignatureVersion'   => 2,
-            'Version'            => '2013-09-01',
+            'Version'            => end($version),
             'SignatureMethod'    => self::SIGNATURE_METHOD
         ];
 

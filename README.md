@@ -33,8 +33,8 @@ $client = new AmazonMwsClient(
 
 // List orders
 $optionalParams = [
-    'CreatedAfter'  => '2017-10-01 00:00:00',
-    'CreatedBefore' => '2017-10-20 23:59:59',
+    'CreatedAfter'  => '2017-09-30T23:00:00Z', // dates should always be in ISO8601 format
+    'CreatedBefore' => '2017-10-23T23:00:00Z',
 ];
 
 var_dump($client->send('ListOrders', '/Orders/2013-09-01', $optionalParams));
