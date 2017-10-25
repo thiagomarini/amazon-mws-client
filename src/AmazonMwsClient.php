@@ -207,8 +207,8 @@ class AmazonMwsClient
      */
     protected function genQuery(array $params, string $uri): string
     {
-        unset($params['Signature']);
         $params['Timestamp'] = self::genTime();
+        unset($params['Signature']);
         $params['Signature'] = $this->signParameters($params, $uri);
 
         return $this->getParametersAsString($params);
@@ -259,10 +259,7 @@ class AmazonMwsClient
             'MWSAuthToken'       => $this->mwsAuthToken,
             'SignatureVersion'   => 2,
             'Version'            => '2013-09-01',
-            'SignatureMethod'    => self::SIGNATURE_METHOD,
-            'CreatedAfter'       => '2017-09-30T23:00:00Z',
-            'CreatedBefore'      => '2017-10-23T23:00:00Z',
-            'MarketplaceId.Id.1' => 'A1F83G8C2ARO7P'
+            'SignatureMethod'    => self::SIGNATURE_METHOD
         ];
 
         $key = 1;
