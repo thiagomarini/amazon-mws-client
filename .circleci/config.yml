@@ -1,0 +1,41 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: php:7.0-apache
+        environment:
+          APP_ENV: local
+          APP_DEBUG: true
+          APP_KEY: kjcndjjksddwdwdw
+          DB_CONNECTION: mysql
+          DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+          DB_DATABASE: testdb
+          DB_USERNAME: root
+          DB_PASSWORD: password
+          CACHE_DRIVER: memcached
+          QUEUE_DRIVER: sync
+      - image: mariadb:5.5
+        environment:
+          MYSQL_DATABASE: testdb
+          MYSQL_ROOT_PASSWORD: password
+    working_directory: /var/www/html
+    steps:
+      - run:
+          name: Install System Packages
+          command: apt-get update && apt-get -y install git unzip zlib1g-dev
+      - checkout
+      - run:
+          name: Install Composer
+          command: |
+            php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && \
+            php -r "copy('https://composer.github.io/installer.sig', 'composer-setup.sig');" && \
+            php -r "if (hash_file('SHA384', 'composer-setup.php') === trim(file_get_contents('composer-setup.sig'))) { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;" && \
+            php composer-setup.php && \
+            php -r "unlink('composer-setup.php');"
+      - run:
+          name: Install Project Dependencies
+          command: php composer.phar install
+      - run:
+          name: Run Tests
+          command: vendor/bin/phpunit
