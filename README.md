@@ -33,8 +33,8 @@ $client = new AmazonMwsClient(
 
 // List orders
 $optionalParams = [
-    'CreatedAfter'  => AmazonMwsClient::genTime('10 September 2017'),
-    'CreatedBefore' => AmazonMwsClient::genTime('20 September 2017'),
+    'CreatedAfter'  => '2017-10-01 00:00:00',
+    'CreatedBefore' => '2017-10-20 23:59:59',
 ];
 
 var_dump($client->send('ListOrders', '/Orders/2013-09-01', $optionalParams));

@@ -55,14 +55,13 @@ class AmazonMwsClient
      */
     public static function genTime(string $time = null): string
     {
-        if (!$time) {
-            $time = time();
+        if ($time) {
+            $timestamp = strtotime($time);
         } else {
-            $time = strtotime($time);
-
+            $timestamp = time();
         }
 
-        return date('Y-m-d\TH:i:sO', $time - 120);
+        return date('Y-m-d\TH:i:sO', $timestamp - 120);
     }
 
     /**
