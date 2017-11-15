@@ -96,6 +96,7 @@ class AmazonMwsClient
         $client = new Client([
             'base_uri'    => $this->baseUrl,
             'body'        => $queryString,
+            'http_errors' => false,
             'headers'     => [
                 'Content-Type' => 'application/x-www-form-urlencoded; charset=UTF-8',
             ],
