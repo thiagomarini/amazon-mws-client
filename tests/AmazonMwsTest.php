@@ -18,6 +18,8 @@ final class AmazonMwsTest extends TestCase
             'baz',
             ['Winterfell'],
             'fake-token',
+            'name',
+            'version',
             'https://weengs.com'
         );
     }
