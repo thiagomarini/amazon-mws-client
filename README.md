@@ -4,7 +4,7 @@
 
 ## What for?
 
-We got very disappointed with the official PHP client Amazon offers on their docs and decided to write a simple client based on Guzzle and suitable for PHP 7 projects.
+We got very disappointed with the official PHP client Amazon offers on their docs and decided to write a simple client based on Guzzle that is good for PHP 7 projects.
 This project is based on the official client.
 The idea is to just hide all the nitty-gritty of handling requests and have as little abstraction as possible, basically you pass the request params and get a XML object back.
 
@@ -42,7 +42,7 @@ $optionalParams = [
 var_dump($client->send('ListOrders', '/Orders/2013-09-01', $optionalParams));
 ```
 
-### Hot to contribute
+### How to contribute
 
 Pull requests are welcome :)
 
