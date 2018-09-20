@@ -37,6 +37,16 @@ class AmazonMwsClient
     /**
      * @var string
      */
+    private $applicationName;
+
+    /**
+     * @var string
+     */
+    private $applicationVersion;
+
+    /**
+     * @var string
+     */
     private $baseUrl;
 
     /**
@@ -55,6 +65,8 @@ class AmazonMwsClient
         string $sellerId,
         array $marketplaceIds,
         string $mwsAuthToken,
+        string $applicationName = 'WeengsAmazonMwsClient',
+        string $applicationVersion = '1.0',
         string $baseUrl = 'https://mws.amazonservices.com'
     )
     {
@@ -66,11 +78,21 @@ class AmazonMwsClient
             );
         }
 
+        if (is_null($applicationName) || $applicationName === '') {
+            throw new \InvalidArgumentException('Application name cannot be null');
+        }
+
+        if (is_null($applicationVersion) || $applicationVersion === "") {
+            throw new \InvalidArgumentException('Application version cannot be null');
+        }
+
         $this->accessKey = $accessKey;
         $this->secretKey = $secretKey;
         $this->sellerId = $sellerId;
         $this->marketplaceIds = $marketplaceIds;
         $this->mwsAuthToken = $mwsAuthToken;
+        $this->applicationName = $applicationName;
+        $this->applicationVersion = $applicationVersion;
         $this->baseUrl = $baseUrl;
     }
 
@@ -87,17 +109,19 @@ class AmazonMwsClient
      *
      * @return \SimpleXMLElement
      */
-    public function send(string $action, string $versionUri, array $optionalParams = []): \SimpleXMLElement
+    public function send(string $action, string $versionUri, array $optionalParams = [], bool $debug = false): \SimpleXMLElement
     {
         $params = array_merge($optionalParams, $this->buildRequiredParams($action, $versionUri));
 
         $queryString = $this->genQuery($params, $versionUri);
 
         $client = new Client([
+            'debug' => $debug,
             'base_uri'    => $this->baseUrl,
             'body'        => $queryString,
             'http_errors' => false,
             'headers'     => [
+                'User-Agent' => $this->generateUserAgent(),
                 'Content-Type' => 'application/x-www-form-urlencoded; charset=UTF-8',
             ],
         ]);
@@ -105,6 +129,24 @@ class AmazonMwsClient
         $response = $client->request(self::METHOD_POST, $versionUri);
 
         return simplexml_load_string($response->getBody()->getContents());
+    }
+
+    /**
+     * Generate the user agent header
+     * 
+     * @return string 
+     */
+    protected function generateUserAgent()
+    {
+        $userAgent = $this->applicationName . '/' . $this->applicationVersion;
+
+        $userAgent .= ' (';
+        $userAgent .= 'Language=PHP/' . phpversion();
+        $userAgent .= '; ';
+        $userAgent .= 'Platform=' . php_uname('s') . '/' . php_uname('m') . '/' . php_uname('r');
+        $userAgent .= ')';
+
+        return $userAgent;
     }
 
     /**

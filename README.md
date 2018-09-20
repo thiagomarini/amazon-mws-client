@@ -23,12 +23,14 @@ Check their documentation and scratchpad to learn all available actions and thei
 ### Usage
 ```php
 // instantiate the client with your credentials
-$client = new AmazonMwsClient(
+$client = new Weengs\AmazonMwsClient(
     'access key',
     'secret key',
     'seller id',
     ['marketplace id'],
-    'mws auth token'
+    'mws auth token',
+    'application name',
+    'application version'
 );
 
 // List orders
