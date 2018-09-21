@@ -133,7 +133,12 @@ class AmazonMwsClient
 
         $response = $client->request(self::METHOD_POST, $versionUri);
 
-        return simplexml_load_string($response->getBody()->getContents());
+        $responsestr = (string) $response->getBody()->getContents();
+        if ($responsestr{0} == '<') {
+            return simplexml_load_string($responsestr);
+        }
+
+        return $responsestr;
     }
 
     /**
