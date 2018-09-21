@@ -8,6 +8,7 @@ use GuzzleHttp\Exception\GuzzleException;
 class AmazonMwsClient
 {
     const METHOD_POST = 'POST';
+
     const SIGNATURE_METHOD = 'HmacSHA256';
 
     /**
@@ -68,9 +69,9 @@ class AmazonMwsClient
         string $sellerId,
         array $marketplaceIds,
         string $mwsAuthToken,
+        string $baseUrl = 'https://mws.amazonservices.com',
         string $applicationName = 'WeengsAmazonMwsClient',
-        string $applicationVersion = '1.0',
-        string $baseUrl = 'https://mws.amazonservices.com'
+        string $applicationVersion = '1.0'
     )
     {
         $needle = 'https://mws.amazonservices';
@@ -115,7 +116,7 @@ class AmazonMwsClient
      * @param bool $debug
      * @throws GuzzleException
      *
-     * @return \SimpleXMLElement|string
+     * @return mixed
      */
     public function send(string $action, string $versionUri, array $optionalParams = [], bool $debug = false)
     {
@@ -137,11 +138,9 @@ class AmazonMwsClient
         $response = $client->request(self::METHOD_POST, $versionUri);
 
         try {
-            // SimpleXMLElement
             return simplexml_load_string($response->getBody()->getContents());
         } catch (\Exception $e) {
-            // tab-delimited flat file
-            return (string)$response->getBody()->getContents();
+            return (string) $response->getBody()->getContents();
         }
     }
 
@@ -153,7 +152,7 @@ class AmazonMwsClient
     protected function generateUserAgent(): string
     {
         return sprintf(
-            '%s/%s(Language=PHP/%s; Platform=%s/%s/%s)',
+            '%s/%s (Language=PHP/%s; Platform=%s/%s/%s)',
             $userAgent = $this->applicationName,
             $this->applicationVersion,
             phpversion(),

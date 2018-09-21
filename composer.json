@@ -1,6 +1,6 @@
 {
   "name": "weengsapp/amazon-mws-client",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "PHP client for Amazon MWS API",
   "keywords": [
     "weengs",

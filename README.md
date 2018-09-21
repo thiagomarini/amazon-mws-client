@@ -1,12 +1,12 @@
 # PHP Client for Amazon MWS API
 
-[![CircleCI](https://circleci.com/gh/thiagomarini/royal-mail-client.svg?style=svg)](https://circleci.com/gh/thiagomarini/royal-mail-client)
+[![CircleCI](https://circleci.com/gh/WeengsApp/amazon-mws-client.svg?style=svg)](https://circleci.com/gh/WeengsApp/amazon-mws-client) [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE)
 
 ## What for?
 
 We got very disappointed with the official PHP client Amazon offers on their docs and decided to write a simple client based on Guzzle that is good for PHP 7 projects.
 This project is based on the official client.
-The idea is to just hide all the nitty-gritty of handling requests and have as little abstraction as possible, basically you pass the request params and get a XML object back.
+The idea is to just hide all the nitty-gritty of handling requests and have as little abstraction as possible, basically you pass the request params and get a XML object or tab-delimited flat file.
 
 Check their documentation and scratchpad to learn all available actions and their request params:
 * http://docs.developer.amazonservices.com/en_UK/dev_guide/DG_Registering.html

@@ -17,11 +17,11 @@ final class AmazonMwsTest extends TestCase
             'foo',
             'bar',
             'baz',
-            ['Winterfell'],
+            ['mkt-place-id'],
             'fake-token',
+            'https://weengs.com',
             'name',
-            'version',
-            'https://weengs.com'
+            'version'
         );
     }
 }
