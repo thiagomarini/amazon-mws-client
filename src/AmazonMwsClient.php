@@ -102,6 +102,8 @@ class AmazonMwsClient
     /**
      * Sends the request to Amazon MWS API
      *
+     * Returns will either be a tab-delimited flat file, or an XML document.
+     *
      * Check their documentation and scratchpad to learn all params and actions available
      * @link  http://docs.developer.amazonservices.com/en_UK/dev_guide/DG_Registering.html
      * @link  https://mws.amazonservices.co.uk/scratchpad/index.html
@@ -111,10 +113,11 @@ class AmazonMwsClient
      * @param array $optionalParams
      *
      * @param bool $debug
-     * @return \SimpleXMLElement
      * @throws GuzzleException
+     *
+     * @return \SimpleXMLElement|string
      */
-    public function send(string $action, string $versionUri, array $optionalParams = [], bool $debug = false): \SimpleXMLElement
+    public function send(string $action, string $versionUri, array $optionalParams = [], bool $debug = false)
     {
         $params = array_merge($optionalParams, $this->buildRequiredParams($action, $versionUri));
 
@@ -133,12 +136,13 @@ class AmazonMwsClient
 
         $response = $client->request(self::METHOD_POST, $versionUri);
 
-        $responsestr = (string) $response->getBody()->getContents();
-        if ($responsestr{0} == '<') {
-            return simplexml_load_string($responsestr);
+        try {
+            // SimpleXMLElement
+            return simplexml_load_string($response->getBody()->getContents());
+        } catch (\Exception $e) {
+            // tab-delimited flat file
+            return (string)$response->getBody()->getContents();
         }
-
-        return $responsestr;
     }
 
     /**
