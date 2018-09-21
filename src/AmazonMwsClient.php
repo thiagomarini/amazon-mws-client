@@ -3,6 +3,7 @@
 namespace Weengs;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
 
 class AmazonMwsClient
 {
@@ -57,6 +58,8 @@ class AmazonMwsClient
      * @param string $sellerId
      * @param array $marketplaceIds
      * @param string $mwsAuthToken
+     * @param string $applicationName
+     * @param string $applicationVersion
      * @param string|null $baseUrl - default is US, see the possible values. UK is https://mws.amazonservices.co.uk for example
      */
     public function __construct(
@@ -107,7 +110,9 @@ class AmazonMwsClient
      * @param string $versionUri
      * @param array $optionalParams
      *
+     * @param bool $debug
      * @return \SimpleXMLElement
+     * @throws GuzzleException
      */
     public function send(string $action, string $versionUri, array $optionalParams = [], bool $debug = false): \SimpleXMLElement
     {
@@ -133,20 +138,20 @@ class AmazonMwsClient
 
     /**
      * Generate the user agent header
-     * 
-     * @return string 
+     *
+     * @return string
      */
-    protected function generateUserAgent()
+    protected function generateUserAgent(): string
     {
-        $userAgent = $this->applicationName . '/' . $this->applicationVersion;
-
-        $userAgent .= ' (';
-        $userAgent .= 'Language=PHP/' . phpversion();
-        $userAgent .= '; ';
-        $userAgent .= 'Platform=' . php_uname('s') . '/' . php_uname('m') . '/' . php_uname('r');
-        $userAgent .= ')';
-
-        return $userAgent;
+        return sprintf(
+            '%s/%s(Language=PHP/%s; Platform=%s/%s/%s)',
+            $userAgent = $this->applicationName,
+            $this->applicationVersion,
+            phpversion(),
+            php_uname('s'),
+            php_uname('m'),
+            php_uname('r')
+        );
     }
 
     /**
@@ -156,7 +161,7 @@ class AmazonMwsClient
      *
      * @return string
      */
-    protected function urlencode($value)
+    protected function urlencode($value): string
     {
         return rawurlencode($value);
     }
@@ -225,7 +230,9 @@ class AmazonMwsClient
     protected function genQuery(array $params, string $uri): string
     {
         $params['Timestamp'] = $this->genTime();
+
         unset($params['Signature']);
+
         $params['Signature'] = $this->signParameters($params, $uri);
 
         return $this->getParametersAsString($params);
@@ -247,10 +254,10 @@ class AmazonMwsClient
      */
     protected function genTime(string $time = null): string
     {
+        $timestamp = time();
+
         if ($time) {
             $timestamp = strtotime($time);
-        } else {
-            $timestamp = time();
         }
 
         return date('Y-m-d\TH:i:sO', $timestamp - 120);
@@ -290,6 +297,7 @@ class AmazonMwsClient
     /**
      * @param string $action
      *
+     * @param string $versionUri
      * @return array
      */
     protected function buildRequiredParams(string $action, string $versionUri): array

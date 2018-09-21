@@ -1,6 +1,7 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
+use Weengs\AmazonMwsClient;
 
 /**
  * @group unit
@@ -12,7 +13,7 @@ final class AmazonMwsTest extends TestCase
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('Base URl must contain "https://mws.amazonservices", received "https://weengs.com"');
 
-        new \Weengs\AmazonMwsClient(
+        new AmazonMwsClient(
             'foo',
             'bar',
             'baz',
