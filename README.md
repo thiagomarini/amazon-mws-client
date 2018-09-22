@@ -28,9 +28,7 @@ $client = new Weengs\AmazonMwsClient(
     'secret key',
     'seller id',
     ['marketplace id'],
-    'mws auth token',
-    'application name',
-    'application version'
+    'mws auth token'
 );
 
 // List orders
