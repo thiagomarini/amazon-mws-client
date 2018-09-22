@@ -59,9 +59,9 @@ class AmazonMwsClient
      * @param string $sellerId
      * @param array $marketplaceIds
      * @param string $mwsAuthToken
+     * @param string|null $baseUrl - default is US, see the possible values. UK is https://mws.amazonservices.co.uk for example
      * @param string $applicationName
      * @param string $applicationVersion
-     * @param string|null $baseUrl - default is US, see the possible values. UK is https://mws.amazonservices.co.uk for example
      */
     public function __construct(
         string $accessKey,
