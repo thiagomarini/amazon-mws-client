@@ -17,52 +17,52 @@ class AmazonMwsClient
     /**
      * @var string
      */
-    private $accessKey;
+    protected $accessKey;
 
     /**
      * @var string
      */
-    private $secretKey;
+    protected $secretKey;
 
     /**
      * @var string
      */
-    private $sellerId;
+    protected $sellerId;
 
     /**
      * @var array
      */
-    private $marketplaceIds;
+    protected $marketplaceIds;
 
     /**
      * @var string
      */
-    private $mwsAuthToken;
+    protected $mwsAuthToken;
 
     /**
      * @var string
      */
-    private $applicationName;
+    protected $applicationName;
 
     /**
      * @var string
      */
-    private $applicationVersion;
+    protected $applicationVersion;
 
     /**
      * @var string
      */
-    private $baseUrl;
+    protected $baseUrl;
 
     /**
      * @var Request
      */
-    private $request;
+    protected $request;
 
     /**
      * @var Response
      */
-    private $response;
+    protected $response;
 
     /**
      * @var ClientInterface
@@ -146,7 +146,7 @@ class AmazonMwsClient
             self::METHOD_POST,
             $versionUri,
             [
-                'User-Agent' => $this->generateUserAgent(),
+                'User-Agent'   => $this->generateUserAgent(),
                 'Content-Type' => 'application/x-www-form-urlencoded; charset=UTF-8',
             ],
             $queryString
@@ -331,13 +331,13 @@ class AmazonMwsClient
         $version = (explode('/', $versionUri));
 
         $requiredParams = [
-            'AWSAccessKeyId'     => $this->accessKey,
-            'Action'             => $action,
-            'SellerId'           => $this->sellerId,
-            'MWSAuthToken'       => $this->mwsAuthToken,
-            'SignatureVersion'   => 2,
-            'Version'            => end($version),
-            'SignatureMethod'    => self::SIGNATURE_METHOD
+            'AWSAccessKeyId'   => $this->accessKey,
+            'Action'           => $action,
+            'SellerId'         => $this->sellerId,
+            'MWSAuthToken'     => $this->mwsAuthToken,
+            'SignatureVersion' => 2,
+            'Version'          => end($version),
+            'SignatureMethod'  => self::SIGNATURE_METHOD,
         ];
 
         $key = 1;
@@ -362,18 +362,6 @@ class AmazonMwsClient
     }
 
     /**
-     * Set http request.
-     *
-     * @param Request $request
-     * @return AmazonMwsClient
-     */
-    public function setRequest(Request $request): AmazonMwsClient
-    {
-        $this->request = $request;
-        return $this;
-    }
-
-    /**
      * Get last http response.
      *
      * @return Response
@@ -384,24 +372,12 @@ class AmazonMwsClient
     }
 
     /**
-     * Set http response.
-     *
-     * @param Response $response
-     * @return AmazonMwsClient
-     */
-    public function setResponse(Response $response): AmazonMwsClient
-    {
-        $this->response = $response;
-        return $this;
-    }
-
-    /**
      * Extract xml content from http response object.
-     * 
+     *
      * @param Response $response
      * @return mixed
      */
-    public function extractXmlData(Response $response)
+    protected function extractXmlData(Response $response)
     {
         return simplexml_load_string($response->getBody()->getContents());
     }
@@ -416,7 +392,7 @@ class AmazonMwsClient
     {
         if (!$this->client) {
             $this->client = new Client([
-                'debug' => $debug,
+                'debug'       => $debug,
                 'base_uri'    => $this->baseUrl,
                 'http_errors' => false,
             ]);
@@ -428,9 +404,9 @@ class AmazonMwsClient
      * Set http client.
      *
      * @param ClientInterface $client
-     * @return AmazonMwsClient
+     * @return self
      */
-    public function setClient(ClientInterface $client): AmazonMwsClient
+    public function setClient(ClientInterface $client): self
     {
         $this->client = $client;
         return $this;
