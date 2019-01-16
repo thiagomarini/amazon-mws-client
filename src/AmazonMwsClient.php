@@ -3,7 +3,10 @@
 namespace Weengs;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\GuzzleException;
+use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Psr7\Response;
 
 class AmazonMwsClient
 {
@@ -50,6 +53,21 @@ class AmazonMwsClient
      * @var string
      */
     private $baseUrl;
+
+    /**
+     * @var Request
+     */
+    private $request;
+
+    /**
+     * @var Response
+     */
+    private $response;
+
+    /**
+     * @var ClientInterface
+     */
+    protected $client;
 
     /**
      * AmazonMwsClient constructor.
@@ -124,23 +142,22 @@ class AmazonMwsClient
 
         $queryString = $this->genQuery($params, $versionUri);
 
-        $client = new Client([
-            'debug' => $debug,
-            'base_uri'    => $this->baseUrl,
-            'body'        => $queryString,
-            'http_errors' => false,
-            'headers'     => [
+        $this->request = new Request(
+            self::METHOD_POST,
+            $versionUri,
+            [
                 'User-Agent' => $this->generateUserAgent(),
                 'Content-Type' => 'application/x-www-form-urlencoded; charset=UTF-8',
             ],
-        ]);
+            $queryString
+        );
 
-        $response = $client->request(self::METHOD_POST, $versionUri);
+        $this->response = $this->getClient($debug)->send($this->request);
 
         try {
-            return simplexml_load_string($response->getBody()->getContents());
+            return $this->extractXmlData($this->response);
         } catch (\Exception $e) {
-            return (string) $response->getBody()->getContents();
+            return (string) $this->response->getBody()->getContents();
         }
     }
 
@@ -332,5 +349,90 @@ class AmazonMwsClient
         }
 
         return $requiredParams;
+    }
+
+    /**
+     * Get last http request.
+     *
+     * @return Request
+     */
+    public function getRequest(): Request
+    {
+        return $this->request;
+    }
+
+    /**
+     * Set http request.
+     *
+     * @param Request $request
+     * @return AmazonMwsClient
+     */
+    public function setRequest(Request $request): AmazonMwsClient
+    {
+        $this->request = $request;
+        return $this;
+    }
+
+    /**
+     * Get last http response.
+     *
+     * @return Response
+     */
+    public function getResponse(): Response
+    {
+        return $this->response;
+    }
+
+    /**
+     * Set http response.
+     *
+     * @param Response $response
+     * @return AmazonMwsClient
+     */
+    public function setResponse(Response $response): AmazonMwsClient
+    {
+        $this->response = $response;
+        return $this;
+    }
+
+    /**
+     * Extract xml content from http response object.
+     * 
+     * @param Response $response
+     * @return mixed
+     */
+    public function extractXmlData(Response $response)
+    {
+        return simplexml_load_string($response->getBody()->getContents());
+    }
+
+    /**
+     * Get or lazy load http client.
+     *
+     * @param bool $debug
+     * @return ClientInterface
+     */
+    public function getClient(bool $debug): ClientInterface
+    {
+        if (!$this->client) {
+            $this->client = new Client([
+                'debug' => $debug,
+                'base_uri'    => $this->baseUrl,
+                'http_errors' => false,
+            ]);
+        }
+        return $this->client;
+    }
+
+    /**
+     * Set http client.
+     *
+     * @param ClientInterface $client
+     * @return AmazonMwsClient
+     */
+    public function setClient(ClientInterface $client): AmazonMwsClient
+    {
+        $this->client = $client;
+        return $this;
     }
 }
