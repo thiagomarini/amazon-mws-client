@@ -4,7 +4,7 @@
 
 ## What for?
 
-We got very disappointed with the official PHP client Amazon offers on their docs and decided to write a simple client based on Guzzle that is good for PHP 7 projects.
+I got very disappointed with the official PHP client Amazon offers on their docs and decided to write a simple client based on Guzzle that is good for PHP 7 projects.
 This project is based on the official client.
 The idea is to just hide all the nitty-gritty of handling requests and have as little abstraction as possible, basically you pass the request params and get a XML object or tab-delimited flat file.
 
@@ -18,7 +18,7 @@ Check their documentation and scratchpad to learn all available actions and thei
 * Guzzle 6
 
 ### Install
-`composer require weengsapp/amazon-mws-client`
+`composer require thiagomarini/amazon-mws-client`
 
 ### Usage
 ```php
