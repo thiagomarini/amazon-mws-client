@@ -1,5 +1,5 @@
 {
-  "name": "weengsapp/amazon-mws-client",
+  "name": "thiagomarini/amazon-mws-client",
   "version": "1.1.0",
   "description": "PHP client for Amazon MWS API",
   "keywords": [
