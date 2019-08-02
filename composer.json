@@ -2,7 +2,6 @@
   "name": "thiagomarini/amazon-mws-client",
   "description": "PHP client for Amazon MWS API",
   "keywords": [
-    "weengs",
     "amazon",
     "mws",
     "api",
