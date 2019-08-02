@@ -1,6 +1,6 @@
 <?php
 
-namespace Weengs;
+namespace ThiagoMarini;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;

@@ -1,6 +1,6 @@
 # PHP Client for Amazon MWS API
 
-[![CircleCI](https://circleci.com/gh/WeengsApp/amazon-mws-client.svg?style=svg)](https://circleci.com/gh/WeengsApp/amazon-mws-client) [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE)
+[![CircleCI](https://circleci.com/gh/thiagomarini/amazon-mws-client.svg?style=svg)](https://circleci.com/gh/thiagomarini/amazon-mws-client) [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE)
 
 ## What for?
 
@@ -25,7 +25,7 @@ Check their documentation and scratchpad to learn all available actions and thei
 ### Usage
 ```php
 // instantiate the client with your credentials
-$client = new Weengs\AmazonMwsClient(
+$client = new AmazonMwsClient(
     'access key',
     'secret key',
     'seller id',

@@ -1,7 +1,7 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-use Weengs\AmazonMwsClient;
+use ThiagoMarini\AmazonMwsClient;
 
 /**
  * @group unit
