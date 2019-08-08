@@ -92,11 +92,12 @@ class AmazonMwsClient
         string $applicationVersion = '1.0'
     )
     {
-        $needle = 'https://mws.amazonservices';
+    	#pattern: https:\/\/mws(?:|\-eu)\.amazonservices
+		$pattern = '/https:\\/\\/mws(?:|\\-eu)\.amazonservices/';
 
-        if (strpos($baseUrl, $needle) === false) {
+		if (preg_match($pattern, $baseUrl) === 1) {
             throw new \InvalidArgumentException(
-                sprintf('Base URl must contain "%s", received "%s"', $needle, $baseUrl)
+                sprintf('Base URl must match "%s", received "%s"', $pattern, $baseUrl)
             );
         }
 
