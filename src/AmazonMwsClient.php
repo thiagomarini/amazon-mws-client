@@ -90,14 +90,12 @@ class AmazonMwsClient
         string $baseUrl = 'https://mws.amazonservices.com',
         string $applicationName = 'WeengsAmazonMwsClient',
         string $applicationVersion = '1.0'
-    )
-    {
-    	#pattern: https:\/\/mws(?:|\-eu)\.amazonservices
+    ) {
 		$pattern = '/https:\\/\\/mws(?:|\\-eu)\.amazonservices/';
 
-		if (preg_match($pattern, $baseUrl) === 1) {
+		if (preg_match($pattern, $baseUrl) !== 1) {
             throw new \InvalidArgumentException(
-                sprintf('Base URl must match "%s", received "%s"', $pattern, $baseUrl)
+                sprintf('Base URL must be a valid MWS endpoint, received "%s"', $baseUrl)
             );
         }
 
