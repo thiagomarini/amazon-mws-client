@@ -374,11 +374,18 @@ class AmazonMwsClient
      * Extract xml content from http response object.
      *
      * @param Response $response
-     * @return mixed
+     * @return \SimpleXMLElement
+     * @throws \RuntimeException
      */
     protected function extractXmlData(Response $response)
     {
-        return simplexml_load_string($response->getBody()->getContents());
+        $xml = simplexml_load_string($response->getBody()->getContents());
+
+        if (false === $xml) {
+            throw new \RuntimeException('Failed to load XML from string');
+        }
+
+        return $xml;
     }
 
     /**
